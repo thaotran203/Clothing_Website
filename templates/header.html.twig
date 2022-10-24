@@ -1,0 +1,33 @@
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=devide-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+        <link href="{{ asset('css/style.css') }}" rel="stylesheet"/>
+        <link href="{{ asset('css/slider.css') }}" rel="stylesheet"/>
+    </head>
+
+    <body>
+        <section id="header">
+            <img src="{{ asset('images/aurora.png') }}" class="logo" alt="" width="170px" height="60px"/>
+
+            <div>
+                <ul id="navbar">
+                    <li><a class="active" href="{{ path('app_product_home') }}">Home</a></li>
+                    <li><a href="{{ path('app_product_index') }}">Shop</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    {% if app.user %}
+                        <li class="nav-item"><a class="nav-link">Hello {{ app.user.email }}</a></li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a href="/{{ app.user ? 'logout' : 'login' }}" class="nav-link">
+                            {{ app.user ? 'Logout' : 'Login' }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </section>     
+    </body>

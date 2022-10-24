@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product index{% endblock %}
+
+{% block body %}
+
+    {{ include('header.html.twig') }}
+
+    <div class="container-md">
+        <div class="row">
+            <div class="col-3">
+                <form action={{ path('app_product_index') }} method="get">
+                    Category:
+                        <select name="category">
+                            <option value="1" {{ (selectedCat=="1") ? 'selected' }}>Dress</option>
+                            <option value="2" {{ (selectedCat=="2") ? 'selected' }}>Skirt</option>
+                            <option value="3" {{ (selectedCat=="3") ? 'selected' }}>Pants</option>
+                            <option value="4" {{ (selectedCat=="4") ? 'selected' }}>Shirt</option>
+                            <option value="5" {{ (selectedCat=="5") ? 'selected' }}>Shorts</option>
+                            <option value="" {{ (selectedCat=="") ? 'selected' }}>All</option>
+                        </select><br>
+                    Name: <input type="text" name="name"><br>
+                    Min Price: <input type="number" name="minPrice"><br>
+                    Max Price: <input type="number" name="maxPrice"><br><br>
+
+                    <input type="submit" value="Filter" class="btn btn-secondary"> |
+                    <a href="{{ path('app_product_index') }}" class="btn btn-secondary">Reset</a>
+                    <br/><br/>
+                    <a href="{{ path('app_product_new') }}" class="btn btn-secondary">Add new product</a>
+                </form>
+            </div>
+
+
+            <section id="new-arrival" class="section-p1">
+                <div class="pro-container">
+                    {% for product in products %}
+                        <div class="pro">
+                           <a href="{{ path('app_product_show', {'id': product.id}) }}"><img class="card-img-top" src="{{ asset('images/product/' ~ product.getImage()) }}"/></a>
+                            <div class="design">
+                                <h5 class="card-title">{{ product.Name }}</h5>
+                                <h4>$ {{ product.price }}</h4>
+                                <a href="#"><img src="{{ asset('images/cart.png') }}" alt=""/></a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </div>   
+
+    <div class="row mt-2">
+        <div style="display:flex;text-align:center;justify-content:center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% for i in range(1, numOfPages) %}
+                        {% set style = app.request.get('pageId')==i ? "active" : "" %}
+                        <li class="page-item {{ style }}">
+                            <a class="page-link"
+                                href={{ path(app.request.attributes.get('_route'),
+                                app.request.query.all|merge({'pageId': i})) }}>{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    {{ include('footer.html.twig') }}
+{% endblock %}
