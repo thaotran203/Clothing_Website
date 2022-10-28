@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Product index{% endblock %}
+{% block title %}Shop{% endblock %}
 
 {% block body %}
 
@@ -8,6 +8,19 @@
 
     <div class="container-md">
         <div class="row">
+            <div class="wrapper" style="display:flex; border-bottom:white; text-align:center; justify-content:center">
+                <form action={{ path('app_product_index') }} method="get">
+                    <div class="input-group">
+                        <div class="form-outline">
+                            <input type="search" name="name" class="form-control" placeholder="Search product name.." />
+                        </div>
+                        <button type="submit" class="btn btn-light">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
             <div class="col-3">
                 <form action={{ path('app_product_index') }} method="get">
                     Category:
@@ -19,7 +32,6 @@
                             <option value="5" {{ (selectedCat=="5") ? 'selected' }}>Shorts</option>
                             <option value="" {{ (selectedCat=="") ? 'selected' }}>All</option>
                         </select><br>
-                    Name: <input type="text" name="name"><br>
                     Min Price: <input type="number" name="minPrice"><br>
                     Max Price: <input type="number" name="maxPrice"><br><br>
 
@@ -46,7 +58,7 @@
                 </div>
             </section>
         </div>
-    </div>   
+    </div>
 
     <div class="row mt-2">
         <div style="display:flex;text-align:center;justify-content:center">
