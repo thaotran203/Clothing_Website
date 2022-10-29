@@ -277,25 +277,3 @@ footer .follow .icon a{
     padding-right: 4px;
     cursor: pointer;
 }
-
-
-/* Shop Page 
-.wrapper {
-    width: 95%;
-    margin: 0 auto;
-}
-
-.wrapper form #search-container {
-    margin: 1em 0;
-}
-
-.wrapper form #search-container input {
-    background-color: transparent;
-    width: 40%;
-    border-bottom: 2px solid white;
-}
-
-.wrapper form #search-container input:focus {
-    border-bottom-color: black;
-}
-*/
