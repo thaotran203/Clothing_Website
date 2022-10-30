@@ -44,15 +44,6 @@ class ProductRepository extends ServiceEntityRepository
 public function findMore($minPrice, $maxPrice, $Cat,$word,$sortBy,$orderBy): Query
 {
 $entityManager = $this->getEntityManager();
-
-
-          
-//'SELECT p from App\Entity\Product p
-//where p.Category=:Cat AND p.Price >= :minP AND p.Price <= :maxP
-//order by p.Price ASC')
-//->setParameter('minP', $minPrice)
-//->setParameter('maxP', $maxPrice)
-//->setParameter('Cat', $Cat);
     $qb = $entityManager->createQueryBuilder();
     $qb->select('p')
     ->from('App:Product','p');

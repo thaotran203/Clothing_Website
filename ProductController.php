@@ -11,14 +11,20 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Collections\Criteria;
+use App\Repository\OrderDetailRepository;
+use App\Repository\OrderRepository;
+use App\Entity\Order;
+use App\Entity\OrderDetail;
 
 /**
  * @Route("/product")
  */
 class ProductController extends AbstractController
 {
+    
     /**
      * @Route("/homepage", name="app_product_home", methods={"GET"})
      */
@@ -31,6 +37,17 @@ class ProductController extends AbstractController
           
         ]);
     }
+      /**
+     * @Route("/view", name="app_product_view", methods={"GET"})
+     */
+    public function viewProduct(Request $request, ProductRepository $productRepository): Response
+    {
+       
+        return $this->render('product/product_review.html.twig', [
+            'products' =>  $productRepository->findAll(),
+          
+        ]);
+    }
     /**
      * @Route("/list/{pageId}", name="app_product_index", methods={"GET"})
      */
@@ -38,6 +55,7 @@ class ProductController extends AbstractController
     CategoryRepository $categoryRepository,
     int $pageId = 1): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         $minPrice = $request->query->get('minPrice');
         $maxPrice = $request->query->get('maxPrice');
         $Cat = $request->query->get('category');
@@ -86,8 +104,8 @@ class ProductController extends AbstractController
      */
     public function new(Request $request, ProductRepository $productRepository): Response
     {
-        //        $this->denyAccessUnlessGranted('ROLE_USER');
-        $hasAccess = $this->isGranted('ROLE_USER');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
@@ -110,45 +128,36 @@ class ProductController extends AbstractController
 
             $productRepository->add($product, true);
 
-            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_product_view', [], Response::HTTP_SEE_OTHER);
         }
-        if ($hasAccess) {
-        return $this->renderForm('product/new.html.twig', [
-            'product' => $product,
-                'form' => $form,
-        ]);
-        }
-        if (!($hasAccess)) {
-            return $this->redirectToRoute('app_login');
-            }
+       
         return $this->renderForm('product/new.html.twig', [
             'product' => $product,
             'form' => $form,
         ]);
     }
-    /**
-     * @Route("/plus", name="app_product_plus", methods={"GET"})
-     */
-    public function plus(Request $request): Response
-    {
-     $this->denyAccessUnlessGranted('ROLE_ADMIN');
-     $firstNum = $request->query->get('a');
-     $secondNum = $request->query->get('b');
-     $Name = $request->query->get('name');
-     return new Response(
-        '<html><body>Tong: '.($firstNum + $secondNum).' welcome:'.($Name).'</body></html>'
-     );
+    
 
-    }
     /**
      * @Route("/{id}", name="app_product_show", methods={"GET"})
      */
     public function show(Product $product): Response
     {
+        $hasAccess = $this->isGranted('ROLE_ADMIN');
+        if ($hasAccess) {
+        return $this->render('product/showforadmin.html.twig', [
+            'product' => $product,
+        ]);
+    } else
+     {
+
         return $this->render('product/show.html.twig', [
             'product' => $product,
         ]);
     }
+}
+
+     
 
     /**
      * @Route("/{id}/edit", name="app_product_edit", methods={"GET", "POST"})
@@ -161,7 +170,7 @@ class ProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $productRepository->add($product, true);
 
-            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_product_view', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('product/edit.html.twig', [
@@ -179,8 +188,9 @@ class ProductController extends AbstractController
             $productRepository->remove($product, true);
         }
 
-        return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_product_view', [], Response::HTTP_SEE_OTHER);
     }
+    
 //     /**
 //  * @Route("/setRole", name="app_set_role", methods={"GET"})
 //  */

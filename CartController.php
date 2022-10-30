@@ -48,24 +48,24 @@ class CartController extends AbstractController
             
             $user = $this->getUser();
             //if it is empty, create an array of pairs (prod Id & quantity) to store first cart element.
-            $cartElements = array($product->getId(), $quantity,$user);
+            $cartElements = array($product->getId(), $quantity);
             //save the array to the session for the first time.
             $session->set('cartElements', $cartElements);
             $cart->setQuantity($quantity);
             $cart->setProduct($product);
             $cart->setUser($user);
             $cartRepository->add($cart, true);
-        // flush all new changes (all order details and update order's total) to DB
-        $entityManager->flush();
+            // flush all new changes (all order details and update order's total) to DB
+            $entityManager->flush();
 
-        // Commit all changes if all changes are OK
-        $entityManager->getConnection()->commit();
+            // Commit all changes if all changes are OK
+            $entityManager->getConnection()->commit();
         } else {
             $entityManager->getConnection()->beginTransaction();
             $user = $this->getUser();
             $cartElements = $session->get('cartElements');
             //Add new product after the first time. (would UPDATE new quantity for added product)
-            $cartElements = array($product->getId(), $quantity,$user) + $cartElements;
+            $cartElements = array($product->getId(), $quantity) + $cartElements;
             //Re-save cart Elements back to session again (after update/append new product to shopping cart)
             $session->set('cartElements', $cartElements);
             $cart->setQuantity($quantity);
