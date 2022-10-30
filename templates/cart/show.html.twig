@@ -11,16 +11,24 @@
                 <th>Id</th>
                 <td>{{ cart.id }}</td>
             </tr>
+              <tr>
+                <th>User</th>
+                <td>{{ cart.User.email }}</td>
+            </tr>
+             <tr>
+                <th>Product</th>
+                <td>{{ cart.Product.Name }}</td>
+            </tr>
             <tr>
                 <th>Quantity</th>
                 <td>{{ cart.Quantity }}</td>
             </tr>
         </tbody>
-    </table>
+    </table><br>
 
-    <a href="{{ path('app_cart_index') }}">back to list</a>
+    <a class="btn btn-light" href="{{ path('app_review_cart') }}">back to list</a><br>
 
-    <a href="{{ path('app_cart_edit', {'id': cart.id}) }}">edit</a>
+    <a class="btn btn-light" href="{{ path('app_cart_edit', {'id': cart.id}) }}">edit</a><br>
 
     {{ include('cart/_delete_form.html.twig') }}
 {% endblock %}

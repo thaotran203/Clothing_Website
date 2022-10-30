@@ -3,33 +3,56 @@
 {% block title %}Category index{% endblock %}
 
 {% block body %}
-    <h1>Category index</h1>
+<head>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+</head>
+<h1>All Product</h1>
+		<a href="{{ path('app_category_new') }}" class="btn btn-outline-danger btn-round"> Add new Category</a>
+
+<div class="card">
+<table class="table table-hover shopping-cart-wrap">
+<thead class="text-muted">
+<tr>
+  <th scope="col">Id</th>
+  <th scope="col">Name</th>
+  <th scope="col">Action</th>
+</tr>
+</thead>
         {% for category in categories %}
-            <tr>
-                <td>{{ category.id }}</td>
-                <td>{{ category.Name }}</td>
-                <td>
-                    <a href="{{ path('app_category_show', {'id': category.id}) }}">show</a>
-                    <a href="{{ path('app_category_edit', {'id': category.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
 
-    <a href="{{ path('app_category_new') }}">Create new</a>
+<tbody>
+<tr>
+	<td>
+		<div class="title text-truncate">
+        {{ category.id }} 
+        </div>
+	</td>
+	
+	<td> 
+
+		<div class="price-wrap"> 
+			<var class="price">{{ category.Name }}</var> 
+		</div> 
+
+	</td>
+	<td> 
+		<a href="{{ path('app_category_edit', {'id': category.id}) }}" class="btn btn-outline-danger btn-round"> Edit</a>
+		<a href="{{ path('app_category_delete', {'id': category.id}) }}" class="btn btn-outline-danger btn-round"> Delete</a>
+	</td>
+       
+
+    
+</tr>
+
+</tbody>
+ {% endfor %}
+
+</table>
+</div> <!-- card.// -->
+
+</div> 
 {% endblock %}

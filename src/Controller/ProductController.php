@@ -11,46 +11,67 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Collections\Criteria;
+use App\Repository\OrderDetailRepository;
+use App\Repository\OrderRepository;
+use App\Entity\Order;
+use App\Entity\OrderDetail;
 
 /**
- * @Route("/clothing_website")
+ * @Route("/product")
  */
 class ProductController extends AbstractController
 {
-
+    
     /**
-     * @Route("/", name="app_product_home", methods={"GET"})
+     * @Route("/homepage", name="app_product_home", methods={"GET"})
      */
-    public function homepage(ProductRepository $productRepository): Response
+    public function homepage(Request $request, ProductRepository $productRepository): Response
     {
-        return $this->render('product/homepage.html.twig');
+        $tempQuery = $productRepository->newAviral();
+       
+        return $this->render('product/homepage.html.twig', [
+            'products' =>  $tempQuery->getResult(),
+          
+        ]);
     }
-
-
-    /**
-     * @Route("/shop/{pageId}", name="app_product_index", methods={"GET"})
+      /**
+     * @Route("/view", name="app_product_view", methods={"GET"})
      */
-    public function index(Request $request, ProductRepository $productRepository, CategoryRepository $categoryRepository, int $pageId = 1): Response
+    public function viewProduct(Request $request, ProductRepository $productRepository): Response
     {
-        //$this->denyAccessUnlessGranted('ROLE_MANAGER');
-        
+       
+        return $this->render('product/product_review.html.twig', [
+            'products' =>  $productRepository->findAll(),
+          
+        ]);
+    }
+    /**
+     * @Route("/list/{pageId}", name="app_product_index", methods={"GET"})
+     */
+    public function index(Request $request, ProductRepository $productRepository,
+    CategoryRepository $categoryRepository,
+    int $pageId = 1): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         $minPrice = $request->query->get('minPrice');
         $maxPrice = $request->query->get('maxPrice');
-        $cat = $request->query->get('category');
+        $Cat = $request->query->get('category');
         $word = $request->query->get('name');
-        // $orderby = $request->query->get('orderBy');
-        // $sortBy = $request->query->get('sortBy');
+        $orderby = $request->query->get('orderBy');
+        $sortBy = $request->query->get('sortBy');
 
-        if(!(is_null($cat)||empty($cat))) {
-            $selectedCat = $cat;
+        
+        if(!(is_null($Cat)||empty($Cat))){
+            $selectedCat=$Cat;
         }
-        else {
-            $selectedCat='';
-        }
+        else
+        $selectedCat='';
 
-        $tempQuery = $productRepository->findProductInRange($minPrice, $maxPrice, $cat, $word);
+
+        $tempQuery = $productRepository->findMore($minPrice, $maxPrice, $Cat,$word,$sortBy,$orderby);
         $pageSize = 9;
 
     // load doctrine Paginator
@@ -77,11 +98,14 @@ class ProductController extends AbstractController
     }
 
 
+
     /**
      * @Route("/new", name="app_product_new", methods={"GET", "POST"})
      */
     public function new(Request $request, ProductRepository $productRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
@@ -103,27 +127,37 @@ class ProductController extends AbstractController
             }
 
             $productRepository->add($product, true);
-            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
-        }
 
+            return $this->redirectToRoute('app_product_view', [], Response::HTTP_SEE_OTHER);
+        }
+       
         return $this->renderForm('product/new.html.twig', [
             'product' => $product,
             'form' => $form,
         ]);
     }
-
-
+    
 
     /**
      * @Route("/{id}", name="app_product_show", methods={"GET"})
      */
     public function show(Product $product): Response
     {
+        $hasAccess = $this->isGranted('ROLE_ADMIN');
+        if ($hasAccess) {
+        return $this->render('product/showforadmin.html.twig', [
+            'product' => $product,
+        ]);
+    } else
+     {
+
         return $this->render('product/show.html.twig', [
             'product' => $product,
         ]);
     }
+}
 
+     
 
     /**
      * @Route("/{id}/edit", name="app_product_edit", methods={"GET", "POST"})
@@ -136,7 +170,7 @@ class ProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $productRepository->add($product, true);
 
-            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_product_view', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('product/edit.html.twig', [
@@ -144,7 +178,6 @@ class ProductController extends AbstractController
             'form' => $form,
         ]);
     }
-
 
     /**
      * @Route("/{id}", name="app_product_delete", methods={"POST"})
@@ -155,6 +188,21 @@ class ProductController extends AbstractController
             $productRepository->remove($product, true);
         }
 
-        return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_product_view', [], Response::HTTP_SEE_OTHER);
     }
+    
+//     /**
+//  * @Route("/setRole", name="app_set_role", methods={"GET"})
+//  */
+// public function setRole(UserRepository $userRepository): JsonResponse
+// {
+//     /** @var \App\Entity\User $user */
+//     $this->denyAccessUnlessGranted('ROLE_ADMIN');
+//     return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+    
+// }
+
+
+
 }
+

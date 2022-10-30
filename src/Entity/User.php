@@ -55,19 +55,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $Address;
 
     /**
-     * @ORM\OneToMany(targetEntity=Cart::class, mappedBy="User")
-     */
-    private $carts;
-
-    /**
      * @ORM\OneToMany(targetEntity=Order::class, mappedBy="User")
      */
     private $orders;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Cart::class, mappedBy="User")
+     */
+    private $carts;
+
     public function __construct()
     {
-        $this->carts = new ArrayCollection();
         $this->orders = new ArrayCollection();
+        $this->carts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -196,36 +196,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Cart>
-     */
-    public function getCarts(): Collection
-    {
-        return $this->carts;
-    }
-
-    public function addCart(Cart $cart): self
-    {
-        if (!$this->carts->contains($cart)) {
-            $this->carts[] = $cart;
-            $cart->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCart(Cart $cart): self
-    {
-        if ($this->carts->removeElement($cart)) {
-            // set the owning side to null (unless already changed)
-            if ($cart->getUser() === $this) {
-                $cart->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Order>
      */
     public function getOrders(): Collection
@@ -249,6 +219,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($order->getUser() === $this) {
                 $order->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cart>
+     */
+    public function getCarts(): Collection
+    {
+        return $this->carts;
+    }
+
+    public function addCart(Cart $cart): self
+    {
+        if (!$this->carts->contains($cart)) {
+            $this->carts[] = $cart;
+            $cart->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCart(Cart $cart): self
+    {
+        if ($this->carts->removeElement($cart)) {
+            // set the owning side to null (unless already changed)
+            if ($cart->getUser() === $this) {
+                $cart->setUser(null);
             }
         }
 

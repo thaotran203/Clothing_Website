@@ -14,7 +14,7 @@ class OrderDetailType extends AbstractType
         $builder
             ->add('Quantity')
             ->add('SubTotal')
-            ->add('Order')
+            ->add('OrderId')
             ->add('Product')
         ;
     }

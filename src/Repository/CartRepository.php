@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Cart;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use  Doctrine\ORM\Query;
 
 /**
  * @extends ServiceEntityRepository<Cart>
@@ -38,6 +39,22 @@ class CartRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function reviewCart($user): Query
+    {
+    
+    $entityManager = $this->getEntityManager();
+    $qb = $entityManager->createQueryBuilder();
+    $qb->select( 'c')
+   ->from('App:Cart', 'c')
+   ->where('c.User= :user')
+   ->setParameter('user', $user);
+   return $qb->getQuery();
+    }
+  
+
+
+
 
 //    /**
 //     * @return Cart[] Returns an array of Cart objects

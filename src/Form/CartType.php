@@ -3,9 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Cart;
+use App\Entity\Product;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class CartType extends AbstractType
 {
@@ -13,8 +16,7 @@ class CartType extends AbstractType
     {
         $builder
             ->add('Quantity')
-            ->add('User')
-            ->add('Product')
+            
         ;
     }
 

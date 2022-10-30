@@ -4,8 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query;
+
 
 /**
  * @extends ServiceEntityRepository<Product>
@@ -40,38 +41,37 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
-
-    public function findProductInRange($minPrice, $maxPrice, $cat, $word): Query
-    {
-        $entityManager = $this->getEntityManager();
-        $qb = $entityManager->createQueryBuilder();
-        
-        $qb->select('p')
-        ->from('App:Product','p');
-            if(is_null($minPrice)|| empty($minPrice))  {
-                $minPrice=0;
-            }
-            $qb->where('p.Price>='.$minPrice);
-            if(!(is_null($maxPrice)|| empty($maxPrice)))  {
-                $qb->andWhere('p.Price<='.$maxPrice);
-            }
-            if(!(is_null($cat)|| empty($cat)))  {
-                    $qb->andWhere('p.Category='.$cat);
-            }
-            if(!(is_null($word)|| empty($word))){
-                $qb -> andWhere('p.Name like :word') ->setParameter('word','%'.$word.'%');
-            }
-            // if((is_null($orderBy)|| empty($orderBy))){
-            //     $qb->addOrderBy('p.Price', 'ASC'); 
-            // }
-            // if (($orderBy=='DESC')){
-            //     $qb->addOrderBy('p.Price', 'DESC'); 
-            // }
-            // if (($orderBy=='ASC')){
-            //     $qb->addOrderBy('p.Price', 'ASC'); 
-            // }
-
-        return $qb->getQuery();
+public function findMore($minPrice, $maxPrice, $Cat,$word,$sortBy,$orderBy): Query
+{
+$entityManager = $this->getEntityManager();
+    $qb = $entityManager->createQueryBuilder();
+    $qb->select('p')
+    ->from('App:Product','p');
+    if(is_null($minPrice)|| empty($minPrice))  {
+        $minPrice=0;
+    }
+    if((is_null($orderBy)|| empty($orderBy))){
+        $qb->addOrderBy('p.Price', 'ASC'); 
+    }
+    if (($orderBy=='DESC')){
+        $qb->addOrderBy('p.Price', 'DESC'); 
+    }
+    if (($orderBy=='ASC')){
+        $qb->addOrderBy('p.Price', 'ASC'); 
+    }
+    $qb->where('p.Price>='.$minPrice);
+    if(!(is_null($maxPrice)|| empty($maxPrice)))  {
+        $qb->andWhere('p.Price<='.$maxPrice);
+    }
+    if(!(is_null($Cat)|| empty($Cat)))  {
+            $qb->andWhere('p.Category='.$Cat);
+    }
+    if(!(is_null($word)|| empty($word))){
+        $qb -> andWhere('p.Name like :word') ->setParameter('word','%'.$word.'%');
+    }
+    
+    
+    return $qb->getQuery();
     }
 
 //    /**
@@ -98,4 +98,16 @@ class ProductRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+public function newAviral(): Query
+{
+$entityManager = $this->getEntityManager();
+    $qb = $entityManager->createQueryBuilder();
+    $qb->select( 'p')
+   ->from('App:Product', 'p')
+   ->addOrderBy('p.ImportDate', 'DESC')
+   ->setMaxResults( '9' );
+   return $qb->getQuery();
+    }
+
 }
+

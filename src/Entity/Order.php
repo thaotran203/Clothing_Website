@@ -49,7 +49,7 @@ class Order
     private $OrderDate;
 
     /**
-     * @ORM\OneToMany(targetEntity=OrderDetail::class, mappedBy="OrderID")
+     * @ORM\OneToMany(targetEntity=OrderDetail::class, mappedBy="OrderId")
      */
     private $orderDetails;
 

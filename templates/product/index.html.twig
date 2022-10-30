@@ -5,31 +5,41 @@
 {% block body %}
 
     {{ include('header.html.twig') }}
-
+    <br/>
     <div class="container-md">
         <div class="row">
             <div class="col-3">
                 <form action={{ path('app_product_index') }} method="get">
                     Category:
-                        <select name="category">
+                        <select name="category"class="form-select ">
                             <option value="1" {{ (selectedCat=="1") ? 'selected' }}>Dress</option>
                             <option value="2" {{ (selectedCat=="2") ? 'selected' }}>Skirt</option>
                             <option value="3" {{ (selectedCat=="3") ? 'selected' }}>Pants</option>
                             <option value="4" {{ (selectedCat=="4") ? 'selected' }}>Shirt</option>
                             <option value="5" {{ (selectedCat=="5") ? 'selected' }}>Shorts</option>
                             <option value="" {{ (selectedCat=="") ? 'selected' }}>All</option>
-                        </select><br>
-                    Name: <input type="text" name="name"><br>
-                    Min Price: <input type="number" name="minPrice"><br>
-                    Max Price: <input type="number" name="maxPrice"><br><br>
-
-                    <input type="submit" value="Filter" class="btn btn-secondary"> |
-                    <a href="{{ path('app_product_index') }}" class="btn btn-secondary">Reset</a>
-                    <br/><br/>
-                    <a href="{{ path('app_product_new') }}" class="btn btn-secondary">Add new product</a>
+                        </select>
+                    Name: <input type="text" name="name" class="input-text form-control">
+                    Min Price: <input type="number" name="minPrice" class="input-text form-control">
+                    Max Price: <input type="number" name="maxPrice" class="input-text form-control">
+                    <br>
+                    <input type="submit" value="Filter" class="btn btn-light"> |
+                    <a href="{{ path('app_product_index') }}" class="btn btn-light">Reset</a><br><br>
+                    <div class="row mt-1" style="display: flex">
+                   <div class="col-10 pr-1">
+                    Price:
+                        <a href="{{ path(app.request.attributes.get('_route'),
+                            app.request.query.all|merge({'sortBy': 'Price', 'orderBy': 'DESC'})) }}"
+                           class="btn btn-light">Hi->Low</a>
+                        <a href="{{ path(app.request.attributes.get('_route'),
+                        app.request.query.all|merge({'sortBy': 'Price', 'orderBy': 'ASC'})) }}"
+                           class="btn btn-light">Low->Hi</a>
+                    </div>
+                </div>
+                    
                 </form>
             </div>
-
+	
 
             <section id="new-arrival" class="section-p1">
                 <div class="pro-container">
@@ -39,7 +49,7 @@
                             <div class="design">
                                 <h5 class="card-title">{{ product.Name }}</h5>
                                 <h4>$ {{ product.price }}</h4>
-                                <a href="#"><img src="{{ asset('images/cart.png') }}" alt=""/></a>
+                                <a href="{{ path('app_product_show', {'id': product.id}) }}"><img src="{{ asset('images/product/cart.png') }}" alt=""/></a>
                             </div>
                         </div>
                     {% endfor %}

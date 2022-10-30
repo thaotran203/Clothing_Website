@@ -16,6 +16,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class ShipmentController extends AbstractController
 {
     /**
+     * @Route("/aboutus", name="app_aboutus", methods={"GET"})
+     */
+    public function aboutUs(): Response
+    {
+        return $this->render('aboutus.html.twig');
+    }
+    /**
      * @Route("/", name="app_shipment_index", methods={"GET"})
      */
     public function index(ShipmentRepository $shipmentRepository): Response

@@ -7,8 +7,8 @@ use App\Entity\Category;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class ProductType extends AbstractType
 {
@@ -21,19 +21,24 @@ class ProductType extends AbstractType
             ->add('Quantity')
             ->add('ImportDate')
             ->add('Description')
-            ->add('Category', EntityType::class, [
-                // looks for choices from this entity
-                'class' => Category::class,
-
-                // uses the User.username property as the visible option string
-                'choice_label' => 'Name'])
             ->add('Image', FileType::class, [
                 'label' => 'Product Thumbnail',
                 // unmapped means that this field is not associated to any entity property
                 'mapped' => false,
                 // every time you edit the Product details
                 'required' => false
-            ]);
+            ]
+)
+            ->add('Category', 
+            EntityType::class, [
+                // looks for choices from this entity
+                'class' => Category::class,
+
+                // uses the User.username property as the visible option string
+                'choice_label' => 'Name'])
+                
+                
+
         ;
     }
 
