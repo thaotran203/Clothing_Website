@@ -32,24 +32,27 @@
                             </div>
 
                             <form action={{ path('app_add_cart', {'id': product.id}) }} method="get">
-                                    {% if app.user %}
+                                {% if app.user %}
                                     <div class="col-lg-12">
                                         <h5>Quantity:</h5>
                                         <input type="number" min="1" name="quantity" class="form-control text-center w-100">
-
                                     </div>
 
                                     <div class="col-lg-12 mt-3">
                                         <div class="row">
                                             <div class="col-lg-6 pb-2">
-                                                <input type="submit" value="Add To Cart" class="btn btn-dark">
+                                                <input type="submit" value="Add To Cart" class="btn btn-dark w-100">
                                             </div>
                                             <div class="col-lg-6">
                                                 <a href="#" class="btn btn-success w-100">Shop Now</a>
                                             </div>
                                         </div>
                                     </div>
-                                    {% endif %}
+                                {% endif %}
+
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('app_product_delete', {'id': product.id}) }}"></a>
+                                {% endif %}
                             </form>
                         </div>
                     </div>

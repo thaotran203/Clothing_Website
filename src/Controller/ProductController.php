@@ -25,7 +25,12 @@ class ProductController extends AbstractController
      */
     public function homepage(ProductRepository $productRepository): Response
     {
-        return $this->render('product/homepage.html.twig');
+        $tempQuery = $productRepository->newAviral();
+       
+        return $this->render('product/homepage.html.twig', [
+            'products' =>  $tempQuery->getResult(),
+          
+        ]);
     }
 
 
@@ -34,23 +39,23 @@ class ProductController extends AbstractController
      */
     public function index(Request $request, ProductRepository $productRepository, CategoryRepository $categoryRepository, int $pageId = 1): Response
     {
-        //$this->denyAccessUnlessGranted('ROLE_MANAGER');
-        
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $minPrice = $request->query->get('minPrice');
         $maxPrice = $request->query->get('maxPrice');
-        $cat = $request->query->get('category');
+        $Cat = $request->query->get('category');
         $word = $request->query->get('name');
-        // $orderby = $request->query->get('orderBy');
-        // $sortBy = $request->query->get('sortBy');
-
-        if(!(is_null($cat)||empty($cat))) {
-            $selectedCat = $cat;
+        $orderby = $request->query->get('orderBy');
+        $sortBy = $request->query->get('sortBy');
+        
+        if(!(is_null($Cat)||empty($Cat))){
+            $selectedCat=$Cat;
         }
-        else {
-            $selectedCat='';
-        }
+        else
+        $selectedCat='';
 
-        $tempQuery = $productRepository->findProductInRange($minPrice, $maxPrice, $cat, $word);
+
+        $tempQuery = $productRepository->findMore($minPrice, $maxPrice, $Cat,$word,$sortBy,$orderby);
         $pageSize = 9;
 
     // load doctrine Paginator
@@ -73,6 +78,19 @@ class ProductController extends AbstractController
             'products' =>  $tempQuery->getResult(),
             'selectedCat' => $selectedCat,
             'numOfPages' => $numOfPages
+        ]);
+    }
+
+
+    /**
+     * @Route("/view", name="app_product_view", methods={"GET"})
+     */
+    public function viewProduct(Request $request, ProductRepository $productRepository): Response
+    {
+       
+        return $this->render('product/product_review.html.twig', [
+            'products' =>  $productRepository->findAll(),
+          
         ]);
     }
 

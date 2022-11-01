@@ -22,6 +22,9 @@ security:
                 path: app_logout
                 # where to redirect after logout
                 target: app_product_home
+    role_hierarchy:
+        ROLE_MANAGER:     [ROLE_USER, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_ADMIN: [ROLE_USER, ROLE_MANAGER, ROLE_ALLOWED_TO_SWITCH]
 
 
             # activate different ways to authenticate

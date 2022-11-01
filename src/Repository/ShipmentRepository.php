@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Shipment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query;
 
 /**
  * @extends ServiceEntityRepository<Shipment>
@@ -38,6 +39,38 @@ class ShipmentRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+
+    public function getShipmentPrice($shipment): Query
+    {
+        $entityManager = $this->getEntityManager();
+        $qb = $entityManager->createQueryBuilder();
+
+        $qb->select('s')
+           ->from('App:Shipment', 's');
+        if(!(is_null($shipment)|| empty($shipment)))  {
+            $qb->andWhere('s.id='.$shipment);
+        }
+
+        return $qb->getQuery();
+    }
+    
+
+    public function getShipment($shipmentID): Query
+    {
+        $entityManager = $this->getEntityManager();
+        $qb = $entityManager->createQueryBuilder();
+
+        $qb->select('s')
+           ->from('App:Shipment', 's');
+        if(!(is_null($shipmentID)|| empty($shipmentID)))  {
+            $qb->andWhere('s.id='.$shipmentID);
+        }
+
+        return $qb->getQuery();
+    }
+
+
 
 //    /**
 //     * @return Shipment[] Returns an array of Shipment objects

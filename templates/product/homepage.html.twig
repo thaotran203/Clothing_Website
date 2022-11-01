@@ -19,32 +19,16 @@
             <h2>NEW ARRIVALS</h2>
 
             <div class="pro-container">
-                <div class="pro">
-                    <img src="{{ asset('images/product1.jpg') }}" alt=""/>
-                    <div class="design">
-                        <h5>Pleated Gold Dress</h5>
-                        <h4>$65</h4>
-                        <a href="#"><img src="{{ asset('images/cart.png') }}" alt=""/></a>
-                    </div>
-                </div>
-                
-                <div class="pro">
-                    <img src="{{ asset('images/product2.jpg') }}" alt=""/>
-                    <div class="design">
-                        <h5>Beaded Plum Red Dress</h5>
-                        <h4>$60.2</h4>
-                        <a href="#"><img src="{{ asset('images/cart.png') }}" alt=""/></a>
-                    </div>
-                </div>
-                
-                <div class="pro">
-                    <img src="{{ asset('images/product4.jpg') }}" alt=""/>
-                    <div class="design">
-                        <h5>Plaid White Skirt</h5>
-                        <h4>$34.6</h4>
-                        <a href="#"><img src="{{ asset('images/cart.png') }}" alt=""/></a>
-                    </div>
-                </div>
+                {% for product in products %}
+                        <div class="pro">
+                           <a href="{{ path('app_product_show', {'id': product.id}) }}"><img class="card-img-top" src="{{ asset('images/product/' ~ product.getImage()) }}"/></a>
+                            <div class="design">
+                                <h5 class="card-title">{{ product.Name }}</h5>
+                                <h4>$ {{ product.price }}</h4>
+                                <a href="{{ path('app_product_show', {'id': product.id}) }}"><img src="{{ asset('images/cart.png') }}" alt=""/></a>
+                            </div>
+                        </div>
+                {% endfor %}
             </div>
         </section>  
 

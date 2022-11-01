@@ -20,7 +20,8 @@
                     <li><a href="#">About</a></li>
                     <li><a href="#">Contact</a></li>
                     {% if app.user %}
-                        <li class="nav-item"><a class="nav-link">Hello {{ app.user.email }}</a></li>
+                        <li class="nav-item"><a class="nav-link">Hello {{ app.user.FullName }}</a></li>
+                        <li><a class="active" href="{{ path('app_review_cart') }}"><img src="{{ asset('images/cart.png') }}" width="30px" height="30px" /></a></li>
                     {% endif %}
                     <li>
                         <a href="/{{ app.user ? 'logout' : 'login' }}" class="nav-link">
