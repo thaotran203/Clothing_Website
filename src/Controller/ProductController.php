@@ -121,7 +121,7 @@ class ProductController extends AbstractController
             }
 
             $productRepository->add($product, true);
-            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_product_view', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('product/new.html.twig', [
@@ -137,9 +137,17 @@ class ProductController extends AbstractController
      */
     public function show(Product $product): Response
     {
-        return $this->render('product/show.html.twig', [
-            'product' => $product,
-        ]);
+        $hasAccess = $this->isGranted('ROLE_MANAGER');
+        if ($hasAccess) {
+            return $this->render('product/showforadmin.html.twig', [
+                'product' => $product,
+            ]);
+        } else
+        {
+            return $this->render('product/show.html.twig', [
+                'product' => $product,
+            ]);
+        }
     }
 
 
@@ -154,7 +162,7 @@ class ProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $productRepository->add($product, true);
 
-            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_product_view', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('product/edit.html.twig', [
@@ -173,6 +181,6 @@ class ProductController extends AbstractController
             $productRepository->remove($product, true);
         }
 
-        return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_product_view', [], Response::HTTP_SEE_OTHER);
     }
 }
