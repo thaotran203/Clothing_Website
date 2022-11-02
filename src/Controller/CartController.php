@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Cart;
 use App\Entity\Order;
+use App\Entity\OrderDetail;
 use App\Form\CartType;
 use App\Repository\CartRepository;
 use App\Repository\ProductRepository;
@@ -149,7 +150,7 @@ class CartController extends AbstractController
     /**
      * @Route("/checkout", name="app_checkout_cart", methods={"GET"})
      */
-    public function checkoutCart(Request $request, PaymentRepository $paymentRepository, ShipmentRepository $shipmentRepository, OrderDetailRepository $orderDetailRepository, OrderRepository $orderRepository, ProductRepository $productRepository, ManagerRegistry $mr): Response
+    public function checkoutCart(Request $request, cartRepository $cartRepository, PaymentRepository $paymentRepository, ShipmentRepository $shipmentRepository, OrderDetailRepository $orderDetailRepository, OrderRepository $orderRepository, ProductRepository $productRepository, ManagerRegistry $mr): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -162,12 +163,11 @@ class CartController extends AbstractController
 
         // check if session has elements in cart
         if ($session->has('cartElements') && !empty($session->get('cartElements'))) {
-        try {
-            // start transaction!
-            $entityManager->getConnection()->beginTransaction();
-            $cartElements = $session->get('cartElements');
 
-            // Create new Order and fill info for it. (Skip Total temporarily for now)
+            $cartElements = $session->get('cartElements');
+            $total = 0;
+            $totalPrice= 0;
+
             $order = new Order();
             date_default_timezone_set('Asia/Ho_Chi_Minh');
             $order->setOrderDate(new \DateTime());
@@ -176,45 +176,43 @@ class CartController extends AbstractController
             $order->setUser($user);
             $order->setShipment($shipment);
             $order->setPayment($payment);
-
-            $orderRepository->add($order, true); //flush here first to have ID in Order in DB.
-
-            // Create all Order Details for the above Order
-            $total = 0;
-            foreach ($cartElements as $product_id => $quantity) {
-            $product = $productRepository->find($product_id);
-            // create each Order Detail
-            $orderDetail = new OrderDetail();
-            $orderDetail->setOrder($order);
-            $orderDetail->setProduct($product);
-            $orderDetail->setQuantity($quantity);
-            $subtotal = $product->getPrice() * $quantity;
-            $orderDetail->setSubTotal($subtotal);
-            $orderDetailRepository->add($orderDetail);
-
-            // calculate total price
-            $total += $subtotal;
-        }
-            $order->setTotal($total);
+            $order->setTotalPrice($totalPrice);
             $orderRepository->add($order);
 
-            // flush all new changes (all order details and update order's total) to DB
-            $entityManager->flush();
+            foreach ($cartElements as $product_id => $quantity) {
+                $product = $productRepository->find($product_id);
+                $orderDetail = new OrderDetail();
 
-            // Commit all changes if all changes are OK
-            $entityManager->getConnection()->commit();
+                // create each Order Detail
+                $orderDetail->setOrder($order);
+                $orderDetail->setProduct($product);
+                $orderDetail->setQuantity($quantity);
+                $subtotal = $product->getPrice() * $quantity;
+                $orderDetail->setSubTotal($subtotal);
+                $orderDetailRepository->add($orderDetail);
+
+                //calculate total price
+                $shipmentPrice = $shipment->getPrice();
+                $total += $subtotal;
+                $totalPrc = $total + $shipmentPrice;
+            }
+            $totalPrice = $totalPrc;
+            $order->setTotalPrice($totalPrice);
+            $orderRepository->add($order);
+            // flush order and orderDetail to database
+            $entityManager->flush();
 
             // Clean up/Empty the cart data (in session) after all.
             $session->remove('cartElements');
-        } catch (Exception $e) {
-        // If any change above got trouble, we roll back (undo) all changes made above!
-        $entityManager->getConnection()->rollBack();
-        }
-        return new Response("Check in DB to see if the checkout process is successful");
-        } else
-        return new Response("Nothing in cart to checkout!");
-    }
+            $cartRepository->removeAllCart($user)->getResult();
 
+            //return $this->redirectToRoute('app_cart_remove', [], Response::HTTP_SEE_OTHER);
+            return new Response("Ordered successfully! Thank you!");
+        }
+        else {
+            return new Response("Nothing in cart to checkout!");
+        }
+    }
 
 
     /**

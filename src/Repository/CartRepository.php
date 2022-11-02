@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\Cart;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use  Doctrine\ORM\Query;
+use Doctrine\ORM\Query;
 
 /**
  * @extends ServiceEntityRepository<Cart>
@@ -50,7 +50,6 @@ class CartRepository extends ServiceEntityRepository
            ->setParameter('user', $user);
         return $qb->getQuery();
     }
-
 
 
 

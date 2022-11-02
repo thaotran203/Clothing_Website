@@ -54,22 +54,6 @@ class ShipmentRepository extends ServiceEntityRepository
 
         return $qb->getQuery();
     }
-    
-
-    public function getShipment($shipmentID): Query
-    {
-        $entityManager = $this->getEntityManager();
-        $qb = $entityManager->createQueryBuilder();
-
-        $qb->select('s')
-           ->from('App:Shipment', 's');
-        if(!(is_null($shipmentID)|| empty($shipmentID)))  {
-            $qb->andWhere('s.id='.$shipmentID);
-        }
-
-        return $qb->getQuery();
-    }
-
 
 
 //    /**

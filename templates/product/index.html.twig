@@ -19,24 +19,23 @@
                             <option value="5" {{ (selectedCat=="5") ? 'selected' }}>Shorts</option>
                             <option value="" {{ (selectedCat=="") ? 'selected' }}>All</option>
                         </select>
-                    Name: <input type="text" name="name" class="input-text form-control">
+                    Name: <input type="text" name="name" class="input-text form-control" autocomplete="on">
                     Min Price: <input type="number" name="minPrice" class="input-text form-control">
                     Max Price: <input type="number" name="maxPrice" class="input-text form-control">
                     <br>
                     <input type="submit" value="Filter" class="btn btn-light"> |
                     <a href="{{ path('app_product_index') }}" class="btn btn-light">Reset</a><br><br>
                     <div class="row mt-1" style="display: flex">
-                   <div class="col-10 pr-1">
-                    Price:
-                        <a href="{{ path(app.request.attributes.get('_route'),
-                            app.request.query.all|merge({'sortBy': 'Price', 'orderBy': 'DESC'})) }}"
-                           class="btn btn-light">Hi->Low</a>
-                        <a href="{{ path(app.request.attributes.get('_route'),
-                        app.request.query.all|merge({'sortBy': 'Price', 'orderBy': 'ASC'})) }}"
-                           class="btn btn-light">Low->Hi</a>
+                        <div class="col-10 pr-1">
+                            Price:
+                                <a href="{{ path(app.request.attributes.get('_route'),
+                                    app.request.query.all|merge({'sortBy': 'Price', 'orderBy': 'DESC'})) }}"
+                                   class="btn btn-light">Hi->Low</a>
+                                <a href="{{ path(app.request.attributes.get('_route'),
+                                app.request.query.all|merge({'sortBy': 'Price', 'orderBy': 'ASC'})) }}"
+                                   class="btn btn-light">Low->Hi</a>
+                        </div>
                     </div>
-                </div>
-                    
                 </form>
             </div>
 	
@@ -47,7 +46,7 @@
                         <div class="pro">
                            <a href="{{ path('app_product_show', {'id': product.id}) }}"><img class="card-img-top" src="{{ asset('images/product/' ~ product.getImage()) }}"/></a>
                             <div class="design">
-                                <h5 class="card-title">{{ product.Name }}</h5>
+                                <h5 class="card-title"> <a href="{{ path('app_product_show', {'id': product.id}) }}" style="text-decoration: none; color: black">{{ product.Name }}</a></h5>
                                 <h4>$ {{ product.price }}</h4>
                                 <a href="{{ path('app_product_show', {'id': product.id}) }}"><img src="{{ asset('images/cart.png') }}" alt=""/></a>
                             </div>
