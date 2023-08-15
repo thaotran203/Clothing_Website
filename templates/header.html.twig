@@ -11,11 +11,11 @@
 
     <body>
         <section id="header">
-            <img src="{{ asset('images/aurora.png') }}" class="logo" alt="" width="170px" height="60px"/>
+            <a href="{{ path('app_product_home') }}"><img src="{{ asset('images/aurora.png') }}" class="logo" alt="" width="170px" height="60px"/>
 
             <div>
                 <ul id="navbar">
-                    <li><a class="active" href="{{ path('app_product_home') }}">Home</a></li>
+                    <li><a  href="{{ path('app_product_home') }}">Home</a></li>
                     <li><a href="{{ path('app_product_index') }}">Shop</a></li>
                     <li><a href="#">About</a></li>
                     <li><a href="#">Contact</a></li>

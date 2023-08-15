@@ -1,0 +1,71 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+        <div>
+            {{ form_start(customer, { 'attr' : { 'class': 'form-control' } }) }}
+            <section class="vh-90 gradient-custom" >
+                <div class="container py-5 h-100" >
+                    <div class="row justify-content-center align-items-center h-100">
+                        <div class="col-12 col-lg-9 col-xl-7">
+                            <div class="card shadow-2-strong card-registration"
+                                 style="border-radius: 15px; background-color: #282726; color: white">
+                                <div class="card-body p-4 p-md-5">
+                                    <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Registration Form</h3>
+                                    <form>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-4">
+                                                <div class="form-outline">
+                                                    {{ form_label(customer.FullName) }}
+                                                    <br>
+                                                    {{ form_widget(customer.FullName) }}                                                </div>
+
+                                            </div>
+                                           
+                                        <div class="row">
+                                            <div class="col-md-6 mb-4">
+                                                <div class="form-outline">
+                                                    {{ form_label(customer.Email) }}
+                                                    <br>
+                                                    {{ form_widget(customer.Email) }}
+                                                </div>
+                                            </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-4">
+                                                <div class="form-outline">
+                                                    {{ form_label(customer.Password)}}
+                                                    {{ form_errors(customer.Password)}}
+                                                    <br>
+                                                    {{ form_widget(customer.Password) }}
+                                                </div>
+                                            </div>
+                                           
+                                       
+                                            <div class="col-md-6 mb-4">
+                                                {{ form_label(customer.Address) }}
+                                                <br>
+                                                {{ form_widget(customer.Address) }}
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-4 pt-2 text-center">
+                                            
+                                            <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                                            {{ form_end(customer) }}
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+        </div>
+
+{% endblock %}
